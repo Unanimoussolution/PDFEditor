@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Image Editor, Splitter, Merger, Compressor, Resizer - Free Tools</title>
+    <meta name="description" content="Free online tools to edit, split, merge, compress, and resize images quickly and easily. Enhance your photos for web and print.">
+    <meta name="keywords" content="image editor, image splitter, image merger, image compressor, image resizer, photo editor, online image tools, free image converter">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JSZip for file downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .header-ad {
+            background: #f3f4f6;
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .logo-text p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: color 0.2s;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            color: #2563eb;
+        }
+        
+        .main {
+            padding: 2rem 0;
+        }
+        
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .sidebar-ad {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .sidebar-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tool-card {
+            background: #f0f9ff;
+            border: 2px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tool-card:hover {
+            background: #e0f2fe;
+            transform: translateY(-1px);
+        }
+        
+        .tool-card.active {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        
+        .tool-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 0.5rem;
+            color: #2563eb;
+        }
+        
+        .tool-name {
+            font-weight: 500;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tool-desc {
+            font-size: 0.75rem;
+            color: #1e40af;
+        }
+        
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-zone:hover {
+            border-color: #2563eb;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #2563eb;
+            background: #f0f9ff;
+        }
+        
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            color: #9ca3af;
+        }
+        
+        .upload-btn {
+            background: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .upload-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .canvas-container {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .canvas-preview {
+            max-width: 100%;
+            max-height: 400px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .control-group {
+            background: #f9fafb;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+        
+        .control-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        
+        .control-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .control-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        
+        .btn {
+            background: #10b981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 0.25rem;
+        }
+        
+        .btn:hover {
+            background: #059669;
+        }
+        
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary { background: #2563eb; }
+        .btn-primary:hover { background: #1d4ed8; }
+        
+        .btn-secondary { background: #6b7280; }
+        .btn-secondary:hover { background: #4b5563; }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 3rem;
+        }
+        
+        .footer-ad {
+            background: #f3f4f6;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            padding: 2rem 0;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .tool-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <!-- Top Banner Ad -->
+        <div class="header-ad">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="TOP_BANNER_AD_SLOT_ID"></ins>
+        </div>
+        
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>ImageTools Pro</h1>
+                        <p>Professional image editing suite</p>
+                    </div>
+                </div>
+                
+                <nav class="nav">
+                    <button class="nav-btn active" onclick="selectTool('editor')">Editor</button>
+                    <button class="nav-btn" onclick="selectTool('splitter')">Splitter</button>
+                    <button class="nav-btn" onclick="selectTool('merger')">Merger</button>
+                    <button class="nav-btn" onclick="selectTool('compressor')">Compressor</button>
+                    <button class="nav-btn" onclick="selectTool('resizer')">Resizer</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="layout">
+                <div class="content">
+                    <h2 class="section-title">Select a Tool</h2>
+                    
+                    <!-- Tool Selection -->
+                    <div class="tool-grid">
+                        <div class="tool-card active" data-tool="editor" onclick="selectTool('editor')">
+                            <svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                            <div class="tool-name">Editor</div>
+                            <div class="tool-desc">Crop, rotate, adjust</div>
+                        </div>
+                        
+                        <div class="tool-card" data-tool="splitter" onclick="selectTool('splitter')">
+                            <svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <div class="tool-name">Splitter</div>
+                            <div class="tool-desc">Split into pieces</div>
+                        </div>
+                        
+                        <div class="tool-card" data-tool="merger" onclick="selectTool('merger')">
+                            <svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                            <div class="tool-name">Merger</div>
+                            <div class="tool-desc">Combine images</div>
+                        </div>
+                        
+                        <div class="tool-card" data-tool="compressor" onclick="selectTool('compressor')">
+                            <svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                            <div class="tool-name">Compressor</div>
+                            <div class="tool-desc">Reduce file size</div>
+                        </div>
+                        
+                        <div class="tool-card" data-tool="resizer" onclick="selectTool('resizer')">
+                            <svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                            </svg>
+                            <div class="tool-name">Resizer</div>
+                            <div class="tool-desc">Change dimensions</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool Content -->
+                    <div id="tool-content">
+                        <!-- Upload Zone -->
+                        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p style="color: #6b7280; margin-bottom: 1rem;">Drop your image here or</p>
+                            <button class="upload-btn">Choose File</button>
+                            <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem;">Supports: JPG, PNG, WebP, GIF</p>
+                        </div>
+                        
+                        <input type="file" id="file-input" accept="image/*" multiple class="hidden" onchange="handleFileUpload(event)">
+                        
+                        <!-- Canvas Area -->
+                        <div class="canvas-container" id="canvas-container">
+                            <div style="text-align: center; color: #6b7280;">
+                                <svg style="width: 64px; height: 64px; margin: 0 auto 1rem; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <p>Upload an image to start processing</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Controls will be dynamically inserted here -->
+                        <div id="controls-container"></div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <!-- Sidebar Ad -->
+                    <div class="sidebar-ad">
+                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="SIDEBAR_AD_SLOT_ID"></ins>
+                    </div>
+                    
+                    <!-- Quick Tips -->
+                    <div class="sidebar-section">
+                        <h3 style="font-weight: 600; margin-bottom: 1rem;">Quick Tips</h3>
+                        <div style="space-y: 0.75rem; font-size: 0.875rem; color: #6b7280;">
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 0.75rem;">
+                                <svg style="width: 16px; height: 16px; color: #2563eb; margin-right: 0.5rem; margin-top: 0.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <p>All image processing happens in your browser - your images never leave your device.</p>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 0.75rem;">
+                                <svg style="width: 16px; height: 16px; color: #10b981; margin-right: 0.5rem; margin-top: 0.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <p>Supported formats: JPG, PNG, WebP, and GIF files.</p>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 0.75rem;">
+                                <svg style="width: 16px; height: 16px; color: #f59e0b; margin-right: 0.5rem; margin-top: 0.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                </svg>
+                                <p>For best results, use high-quality source images.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Features -->
+                    <div class="sidebar-section">
+                        <h3 style="font-weight: 600; margin-bottom: 1rem;">Features</h3>
+                        <div style="space-y: 1rem;">
+                            <div style="border-left: 4px solid #2563eb; padding-left: 0.75rem; margin-bottom: 1rem;">
+                                <h4 style="font-weight: 500; font-size: 0.875rem; margin-bottom: 0.25rem;">Image Editor</h4>
+                                <p style="font-size: 0.75rem; color: #6b7280;">Crop, rotate, flip, adjust brightness & contrast</p>
+                            </div>
+                            <div style="border-left: 4px solid #10b981; padding-left: 0.75rem; margin-bottom: 1rem;">
+                                <h4 style="font-weight: 500; font-size: 0.875rem; margin-bottom: 0.25rem;">Image Splitter</h4>
+                                <p style="font-size: 0.75rem; color: #6b7280;">Split images into grid pieces or exact dimensions</p>
+                            </div>
+                            <div style="border-left: 4px solid #8b5cf6; padding-left: 0.75rem; margin-bottom: 1rem;">
+                                <h4 style="font-weight: 500; font-size: 0.875rem; margin-bottom: 0.25rem;">Image Merger</h4>
+                                <p style="font-size: 0.75rem; color: #6b7280;">Combine multiple images with custom layouts</p>
+                            </div>
+                            <div style="border-left: 4px solid #f59e0b; padding-left: 0.75rem; margin-bottom: 1rem;">
+                                <h4 style="font-weight: 500; font-size: 0.875rem; margin-bottom: 0.25rem;">Image Compressor</h4>
+                                <p style="font-size: 0.75rem; color: #6b7280;">Reduce file size with quality control</p>
+                            </div>
+                            <div style="border-left: 4px solid #ef4444; padding-left: 0.75rem;">
+                                <h4 style="font-weight: 500; font-size: 0.875rem; margin-bottom: 0.25rem;">Image Resizer</h4>
+                                <p style="font-size: 0.75rem; color: #6b7280;">Resize by pixels or percentage with aspect ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Bottom Banner Ad -->
+        <div class="footer-ad">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="BOTTOM_BANNER_AD_SLOT_ID"></ins>
+        </div>
+        
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 ImageTools Pro. All rights reserved.</p>
+                <p style="font-size: 0.875rem; margin-top: 0.5rem;">Privacy-focused image processing in your browser</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing image...</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentTool = 'editor';
+        let originalImages = [];
+        let processedCanvas = null;
+        let isLoading = false;
+
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function calculateSizeReduction(originalSize, compressedSize) {
+            const reduction = ((originalSize - compressedSize) / originalSize) * 100;
+            return reduction.toFixed(1) + '%';
+        }
+
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    resolve(img);
+                };
+                
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Failed to load image'));
+                };
+                
+                img.src = url;
+            });
+        }
+
+        function createCanvas(width, height) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            return canvas;
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function downloadCanvas(canvas, filename, quality = 0.8) {
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }
+            }, 'image/jpeg', quality);
+        }
+
+        async function downloadCanvasesAsZip(canvases, baseFilename, quality = 0.8) {
+            if (!window.JSZip) {
+                alert('JSZip library not loaded. Cannot create ZIP file.');
+                return;
+            }
+
+            const zip = new JSZip();
+
+            const promises = canvases.map(async (canvas, index) => {
+                return new Promise((resolve) => {
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const filename = `${baseFilename}_${index + 1}.jpg`;
+                            zip.file(filename, blob);
+                        }
+                        resolve();
+                    }, 'image/jpeg', quality);
+                });
+            });
+
+            await Promise.all(promises);
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(content);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${baseFilename}.zip`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Tool selection
+        function selectTool(tool) {
+            currentTool = tool;
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.nav-btn[onclick="selectTool('${tool}')"]`)?.classList.add('active');
+            
+            // Update tool cards
+            document.querySelectorAll('.tool-card').forEach(card => card.classList.remove('active'));
+            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            
+            // Clear previous state
+            originalImages = [];
+            processedCanvas = null;
+            document.getElementById('canvas-container').innerHTML = `
+                <div style="text-align: center; color: #6b7280;">
+                    <svg style="width: 64px; height: 64px; margin: 0 auto 1rem; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <p>Upload an image to start processing</p>
+                </div>
+            `;
+            
+            // Update controls based on tool
+            updateControls();
+        }
+
+        // File upload handling
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            showLoading();
+            
+            try {
+                if (currentTool === 'merger') {
+                    // Load multiple images for merger
+                    const imagePromises = Array.from(files).map(file => loadImage(file));
+                    originalImages = await Promise.all(imagePromises);
+                } else {
+                    // Load single image for other tools
+                    const img = await loadImage(files[0]);
+                    originalImages = [img];
+                }
+                
+                displayImages();
+                updateControls();
+            } catch (error) {
+                console.error('Error loading images:', error);
+                alert('Error loading images. Please try again.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display images
+        function displayImages() {
+            const container = document.getElementById('canvas-container');
+            
+            if (originalImages.length === 0) return;
+            
+            if (currentTool === 'merger' && originalImages.length > 1) {
+                // Show thumbnails for merger
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem; width: 100%;">
+                        ${originalImages.map((img, index) => `
+                            <div style="text-align: center;">
+                                <canvas id="thumb-${index}" style="max-width: 100px; max-height: 100px; border: 1px solid #d1d5db; border-radius: 4px;"></canvas>
+                                <p style="font-size: 0.75rem; margin-top: 0.25rem;">Image ${index + 1}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                // Draw thumbnails
+                originalImages.forEach((img, index) => {
+                    const canvas = document.getElementById(`thumb-${index}`);
+                    const ctx = canvas.getContext('2d');
+                    const scale = Math.min(100 / img.width, 100 / img.height);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                });
+            } else {
+                // Show single image
+                const img = originalImages[0];
+                container.innerHTML = `<canvas id="main-canvas" class="canvas-preview"></canvas>`;
+                const canvas = document.getElementById('main-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+            }
+        }
+
+        // Update controls based on current tool
+        function updateControls() {
+            const container = document.getElementById('controls-container');
+            
+            switch (currentTool) {
+                case 'editor':
+                    container.innerHTML = `
+                        <div class="controls-grid">
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Transform</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                    <button class="btn btn-secondary" onclick="rotateImage(-90)">↺ Left</button>
+                                    <button class="btn btn-secondary" onclick="rotateImage(90)">↻ Right</button>
+                                    <button class="btn btn-secondary" onclick="flipImage('horizontal')">⇄ Flip H</button>
+                                    <button class="btn btn-secondary" onclick="flipImage('vertical')">⇅ Flip V</button>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Adjustments</h4>
+                                <label class="control-label">Brightness</label>
+                                <input type="range" class="control-input" min="-50" max="50" value="0" id="brightness" oninput="applyAdjustments()">
+                                <label class="control-label">Contrast</label>
+                                <input type="range" class="control-input" min="-50" max="50" value="0" id="contrast" oninput="applyAdjustments()">
+                                <label style="display: flex; align-items: center; margin-top: 0.5rem;">
+                                    <input type="checkbox" id="grayscale" onchange="applyAdjustments()" style="margin-right: 0.5rem;">
+                                    Grayscale
+                                </label>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="downloadProcessedImage()" ${originalImages.length === 0 ? 'disabled' : ''}>Download Edited Image</button>
+                            <button class="btn btn-secondary" onclick="resetEditor()">Reset</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'splitter':
+                    container.innerHTML = `
+                        <div class="controls-grid">
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Split Method</h4>
+                                <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <input type="radio" name="split-method" value="grid" checked onchange="updateSplitMethod()" style="margin-right: 0.5rem;">
+                                    Grid (Rows × Columns)
+                                </label>
+                                <label style="display: flex; align-items: center;">
+                                    <input type="radio" name="split-method" value="dimensions" onchange="updateSplitMethod()" style="margin-right: 0.5rem;">
+                                    Exact Dimensions
+                                </label>
+                            </div>
+                            <div class="control-group" id="split-controls">
+                                <h4 style="margin-bottom: 1rem;">Grid Settings</h4>
+                                <label class="control-label">Rows</label>
+                                <input type="number" class="control-input" min="1" max="10" value="2" id="split-rows">
+                                <label class="control-label">Columns</label>
+                                <input type="number" class="control-input" min="1" max="10" value="2" id="split-cols">
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="splitImage()" ${originalImages.length === 0 ? 'disabled' : ''}>Split Image</button>
+                        </div>
+                        <div id="split-results"></div>
+                    `;
+                    break;
+                    
+                case 'merger':
+                    container.innerHTML = `
+                        <div class="controls-grid">
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Layout</h4>
+                                <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <input type="radio" name="merge-layout" value="horizontal" checked style="margin-right: 0.5rem;">
+                                    Horizontal
+                                </label>
+                                <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <input type="radio" name="merge-layout" value="vertical" style="margin-right: 0.5rem;">
+                                    Vertical
+                                </label>
+                                <label style="display: flex; align-items: center;">
+                                    <input type="radio" name="merge-layout" value="grid" style="margin-right: 0.5rem;">
+                                    Grid
+                                </label>
+                            </div>
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Spacing</h4>
+                                <label class="control-label">Gap (px)</label>
+                                <input type="number" class="control-input" min="0" max="100" value="10" id="merge-gap">
+                                <label class="control-label">Background Color</label>
+                                <input type="color" class="control-input" value="#ffffff" id="merge-bg">
+                                <div id="grid-cols-control" class="hidden">
+                                    <label class="control-label">Grid Columns</label>
+                                    <input type="number" class="control-input" min="1" max="5" value="2" id="grid-cols">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="mergeImages()" ${originalImages.length < 2 ? 'disabled' : ''}>Merge Images</button>
+                        </div>
+                    `;
+                    
+                    // Add event listener for grid layout
+                    document.querySelectorAll('input[name="merge-layout"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            const gridControl = document.getElementById('grid-cols-control');
+                            if (this.value === 'grid') {
+                                gridControl.classList.remove('hidden');
+                            } else {
+                                gridControl.classList.add('hidden');
+                            }
+                        });
+                    });
+                    break;
+                    
+                case 'compressor':
+                    container.innerHTML = `
+                        <div class="controls-grid">
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Quality Settings</h4>
+                                <label class="control-label">Quality: <span id="quality-value">80</span>%</label>
+                                <input type="range" class="control-input" min="10" max="100" value="80" id="quality" oninput="updateQuality()">
+                                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">
+                                    <p>• 10-30%: Maximum compression</p>
+                                    <p>• 60-80%: Good balance</p>
+                                    <p>• 90-100%: Minimal compression</p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">File Size</h4>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Original:</span>
+                                    <span id="original-size">--</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Compressed:</span>
+                                    <span id="compressed-size" style="color: #10b981;">--</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
+                                    <span style="font-weight: 500;">Reduction:</span>
+                                    <span id="size-reduction" style="font-weight: 700; color: #10b981;">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="compressImage()" ${originalImages.length === 0 ? 'disabled' : ''}>Compress Image</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'resizer':
+                    container.innerHTML = `
+                        <div class="controls-grid">
+                            <div class="control-group">
+                                <h4 style="margin-bottom: 1rem;">Resize Method</h4>
+                                <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <input type="radio" name="resize-method" value="pixels" checked onchange="updateResizeMethod()" style="margin-right: 0.5rem;">
+                                    Exact Pixels
+                                </label>
+                                <label style="display: flex; align-items: center;">
+                                    <input type="radio" name="resize-method" value="percentage" onchange="updateResizeMethod()" style="margin-right: 0.5rem;">
+                                    Percentage
+                                </label>
+                            </div>
+                            <div class="control-group" id="resize-controls">
+                                <h4 style="margin-bottom: 1rem;">Dimensions</h4>
+                                <label class="control-label">Width (px)</label>
+                                <input type="number" class="control-input" min="1" value="800" id="resize-width" oninput="maintainAspectRatio('width')">
+                                <label class="control-label">Height (px)</label>
+                                <input type="number" class="control-input" min="1" value="600" id="resize-height" oninput="maintainAspectRatio('height')">
+                                <label style="display: flex; align-items: center; margin-top: 0.5rem;">
+                                    <input type="checkbox" id="maintain-aspect" checked style="margin-right: 0.5rem;">
+                                    Maintain aspect ratio
+                                </label>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="resizeImage()" ${originalImages.length === 0 ? 'disabled' : ''}>Resize Image</button>
+                        </div>
+                    `;
+                    
+                    // Set initial dimensions if image is loaded
+                    if (originalImages.length > 0) {
+                        const img = originalImages[0];
+                        document.getElementById('resize-width').value = img.width;
+                        document.getElementById('resize-height').value = img.height;
+                    }
+                    break;
+            }
+        }
+
+        // Image processing functions
+        function processImage(image, options = {}) {
+            const { brightness = 0, contrast = 0, grayscale = false, rotation = 0, flipHorizontal = false, flipVertical = false } = options;
+            
+            let canvas = createCanvas(image.width, image.height);
+            let ctx = canvas.getContext('2d');
+
+            // Handle rotation - adjust canvas size if needed
+            if (rotation === 90 || rotation === 270) {
+                canvas = createCanvas(image.height, image.width);
+                ctx = canvas.getContext('2d');
+            }
+
+            ctx.save();
+
+            // Apply transformations
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.translate(centerX, centerY);
+            
+            if (rotation !== 0) {
+                ctx.rotate((rotation * Math.PI) / 180);
+            }
+            
+            if (flipHorizontal || flipVertical) {
+                ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
+            }
+
+            ctx.drawImage(image, -image.width / 2, -image.height / 2);
+            ctx.restore();
+
+            // Apply filters
+            if (brightness !== 0 || contrast !== 0 || grayscale) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    let r = data[i];
+                    let g = data[i + 1];
+                    let b = data[i + 2];
+
+                    // Apply brightness
+                    if (brightness !== 0) {
+                        r = Math.max(0, Math.min(255, r + brightness * 2.55));
+                        g = Math.max(0, Math.min(255, g + brightness * 2.55));
+                        b = Math.max(0, Math.min(255, b + brightness * 2.55));
+                    }
+
+                    // Apply contrast
+                    if (contrast !== 0) {
+                        const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+                        r = Math.max(0, Math.min(255, factor * (r - 128) + 128));
+                        g = Math.max(0, Math.min(255, factor * (g - 128) + 128));
+                        b = Math.max(0, Math.min(255, factor * (b - 128) + 128));
+                    }
+
+                    // Apply grayscale
+                    if (grayscale) {
+                        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                        r = g = b = gray;
+                    }
+
+                    data[i] = r;
+                    data[i + 1] = g;
+                    data[i + 2] = b;
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+            }
+
+            return canvas;
+        }
+
+        // Tool-specific functions
+        let editorState = {
+            brightness: 0,
+            contrast: 0,
+            grayscale: false,
+            rotation: 0,
+            flipHorizontal: false,
+            flipVertical: false
+        };
+
+        function rotateImage(degrees) {
+            if (originalImages.length === 0) return;
+            
+            editorState.rotation = (editorState.rotation + degrees) % 360;
+            applyEditorChanges();
+        }
+
+        function flipImage(direction) {
+            if (originalImages.length === 0) return;
+            
+            if (direction === 'horizontal') {
+                editorState.flipHorizontal = !editorState.flipHorizontal;
+            } else {
+                editorState.flipVertical = !editorState.flipVertical;
+            }
+            applyEditorChanges();
+        }
+
+        function applyAdjustments() {
+            if (originalImages.length === 0) return;
+            
+            editorState.brightness = parseInt(document.getElementById('brightness').value);
+            editorState.contrast = parseInt(document.getElementById('contrast').value);
+            editorState.grayscale = document.getElementById('grayscale').checked;
+            
+            applyEditorChanges();
+        }
+
+        function applyEditorChanges() {
+            if (originalImages.length === 0) return;
+            
+            const canvas = processImage(originalImages[0], editorState);
+            processedCanvas = canvas;
+            
+            const displayCanvas = document.getElementById('main-canvas');
+            if (displayCanvas) {
+                const ctx = displayCanvas.getContext('2d');
+                displayCanvas.width = canvas.width;
+                displayCanvas.height = canvas.height;
+                ctx.drawImage(canvas, 0, 0);
+            }
+        }
+
+        function resetEditor() {
+            editorState = {
+                brightness: 0,
+                contrast: 0,
+                grayscale: false,
+                rotation: 0,
+                flipHorizontal: false,
+                flipVertical: false
+            };
+            
+            // Reset controls
+            document.getElementById('brightness').value = 0;
+            document.getElementById('contrast').value = 0;
+            document.getElementById('grayscale').checked = false;
+            
+            if (originalImages.length > 0) {
+                displayImages();
+            }
+        }
+
+        function updateSplitMethod() {
+            const method = document.querySelector('input[name="split-method"]:checked').value;
+            const controls = document.getElementById('split-controls');
+            
+            if (method === 'grid') {
+                controls.innerHTML = `
+                    <h4 style="margin-bottom: 1rem;">Grid Settings</h4>
+                    <label class="control-label">Rows</label>
+                    <input type="number" class="control-input" min="1" max="10" value="2" id="split-rows">
+                    <label class="control-label">Columns</label>
+                    <input type="number" class="control-input" min="1" max="10" value="2" id="split-cols">
+                `;
+            } else {
+                controls.innerHTML = `
+                    <h4 style="margin-bottom: 1rem;">Piece Dimensions</h4>
+                    <label class="control-label">Width (px)</label>
+                    <input type="number" class="control-input" min="50" value="200" id="piece-width">
+                    <label class="control-label">Height (px)</label>
+                    <input type="number" class="control-input" min="50" value="200" id="piece-height">
+                `;
+            }
+        }
+
+        function splitImage() {
+            if (originalImages.length === 0) return;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                try {
+                    const image = originalImages[0];
+                    const method = document.querySelector('input[name="split-method"]:checked').value;
+                    let pieces = [];
+                    
+                    if (method === 'grid') {
+                        const rows = parseInt(document.getElementById('split-rows').value);
+                        const cols = parseInt(document.getElementById('split-cols').value);
+                        pieces = splitImageGrid(image, rows, cols);
+                    } else {
+                        const pieceWidth = parseInt(document.getElementById('piece-width').value);
+                        const pieceHeight = parseInt(document.getElementById('piece-height').value);
+                        pieces = splitImageDimensions(image, pieceWidth, pieceHeight);
+                    }
+                    
+                    displaySplitResults(pieces);
+                } catch (error) {
+                    console.error('Error splitting image:', error);
+                    alert('Error splitting image. Please try again.');
+                } finally {
+                    hideLoading();
+                }
+            }, 100);
+        }
+
+        function splitImageGrid(image, rows, cols) {
+            const pieceWidth = Math.floor(image.width / cols);
+            const pieceHeight = Math.floor(image.height / rows);
+            const pieces = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const canvas = createCanvas(pieceWidth, pieceHeight);
+                    const ctx = canvas.getContext('2d');
+                    
+                    const x = col * pieceWidth;
+                    const y = row * pieceHeight;
+                    
+                    ctx.drawImage(
+                        image,
+                        x, y, pieceWidth, pieceHeight,
+                        0, 0, pieceWidth, pieceHeight
+                    );
+                    
+                    pieces.push(canvas);
+                }
+            }
+
+            return pieces;
+        }
+
+        function splitImageDimensions(image, pieceWidth, pieceHeight) {
+            const cols = Math.ceil(image.width / pieceWidth);
+            const rows = Math.ceil(image.height / pieceHeight);
+            const pieces = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const x = col * pieceWidth;
+                    const y = row * pieceHeight;
+                    const w = Math.min(pieceWidth, image.width - x);
+                    const h = Math.min(pieceHeight, image.height - y);
+                    
+                    const canvas = createCanvas(w, h);
+                    const ctx = canvas.getContext('2d');
+                    
+                    ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
+                    pieces.push(canvas);
+                }
+            }
+
+            return pieces;
+        }
+
+        function displaySplitResults(pieces) {
+            const resultsDiv = document.getElementById('split-results');
+            
+            resultsDiv.innerHTML = `
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #f0f9ff; border-radius: 8px;">
+                    <h4 style="margin-bottom: 1rem;">Split Results (${pieces.length} pieces)</h4>
+                    <div style="margin-bottom: 1rem;">
+                        <button class="btn" onclick="downloadSplitAsZip()">Download All as ZIP</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem;" id="split-previews">
+                        ${pieces.map((_, index) => `
+                            <div style="text-align: center;">
+                                <canvas id="split-${index}" style="max-width: 100px; max-height: 100px; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer;" onclick="downloadSinglePiece(${index})"></canvas>
+                                <p style="font-size: 0.75rem; margin-top: 0.25rem;">Piece ${index + 1}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Draw previews
+            pieces.forEach((piece, index) => {
+                const canvas = document.getElementById(`split-${index}`);
+                const ctx = canvas.getContext('2d');
+                const scale = Math.min(100 / piece.width, 100 / piece.height);
+                canvas.width = piece.width * scale;
+                canvas.height = piece.height * scale;
+                ctx.drawImage(piece, 0, 0, canvas.width, canvas.height);
+            });
+            
+            // Store pieces for download
+            window.splitPieces = pieces;
+        }
+
+        function downloadSplitAsZip() {
+            if (window.splitPieces) {
+                downloadCanvasesAsZip(window.splitPieces, 'split-image');
+            }
+        }
+
+        function downloadSinglePiece(index) {
+            if (window.splitPieces && window.splitPieces[index]) {
+                downloadCanvas(window.splitPieces[index], `split-image-${index + 1}.jpg`);
+            }
+        }
+
+        function mergeImages() {
+            if (originalImages.length < 2) return;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                try {
+                    const layout = document.querySelector('input[name="merge-layout"]:checked').value;
+                    const gap = parseInt(document.getElementById('merge-gap').value);
+                    const backgroundColor = document.getElementById('merge-bg').value;
+                    const gridCols = layout === 'grid' ? parseInt(document.getElementById('grid-cols').value) : undefined;
+                    
+                    const canvas = mergeImagesWithLayout(originalImages, layout, gap, backgroundColor, gridCols);
+                    processedCanvas = canvas;
+                    
+                    // Display merged image
+                    const container = document.getElementById('canvas-container');
+                    container.innerHTML = `<canvas id="merged-canvas" class="canvas-preview"></canvas>`;
+                    const displayCanvas = document.getElementById('merged-canvas');
+                    const ctx = displayCanvas.getContext('2d');
+                    displayCanvas.width = canvas.width;
+                    displayCanvas.height = canvas.height;
+                    ctx.drawImage(canvas, 0, 0);
+                    
+                    // Add download button
+                    const controlsContainer = document.getElementById('controls-container');
+                    const downloadBtn = document.createElement('div');
+                    downloadBtn.innerHTML = `
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="downloadProcessedImage()">Download Merged Image</button>
+                        </div>
+                    `;
+                    controlsContainer.appendChild(downloadBtn);
+                } catch (error) {
+                    console.error('Error merging images:', error);
+                    alert('Error merging images. Please try again.');
+                } finally {
+                    hideLoading();
+                }
+            }, 100);
+        }
+
+        function mergeImagesWithLayout(images, layout, gap, backgroundColor, gridCols) {
+            if (images.length === 0) {
+                throw new Error('No images to merge');
+            }
+
+            let totalWidth = 0;
+            let totalHeight = 0;
+
+            if (layout === 'horizontal') {
+                totalWidth = images.reduce((sum, img) => sum + img.width, 0) + gap * (images.length - 1);
+                totalHeight = Math.max(...images.map(img => img.height));
+            } else if (layout === 'vertical') {
+                totalWidth = Math.max(...images.map(img => img.width));
+                totalHeight = images.reduce((sum, img) => sum + img.height, 0) + gap * (images.length - 1);
+            } else if (layout === 'grid') {
+                const cols = gridCols || Math.ceil(Math.sqrt(images.length));
+                const rows = Math.ceil(images.length / cols);
+                const maxWidth = Math.max(...images.map(img => img.width));
+                const maxHeight = Math.max(...images.map(img => img.height));
+                
+                totalWidth = maxWidth * cols + gap * (cols - 1);
+                totalHeight = maxHeight * rows + gap * (rows - 1);
+            }
+
+            const canvas = createCanvas(totalWidth, totalHeight);
+            const ctx = canvas.getContext('2d');
+
+            // Fill background
+            ctx.fillStyle = backgroundColor;
+            ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+            let currentX = 0;
+            let currentY = 0;
+
+            images.forEach((img, index) => {
+                if (layout === 'horizontal') {
+                    ctx.drawImage(img, currentX, (totalHeight - img.height) / 2);
+                    currentX += img.width + gap;
+                } else if (layout === 'vertical') {
+                    ctx.drawImage(img, (totalWidth - img.width) / 2, currentY);
+                    currentY += img.height + gap;
+                } else if (layout === 'grid') {
+                    const cols = gridCols || Math.ceil(Math.sqrt(images.length));
+                    const row = Math.floor(index / cols);
+                    const col = index % cols;
+                    const maxWidth = Math.max(...images.map(img => img.width));
+                    const maxHeight = Math.max(...images.map(img => img.height));
+                    
+                    const x = col * (maxWidth + gap);
+                    const y = row * (maxHeight + gap);
+                    
+                    ctx.drawImage(img, x + (maxWidth - img.width) / 2, y + (maxHeight - img.height) / 2);
+                }
+            });
+
+            return canvas;
+        }
+
+        function updateQuality() {
+            const quality = document.getElementById('quality').value;
+            document.getElementById('quality-value').textContent = quality;
+            
+            if (originalImages.length > 0) {
+                compressImage();
+            }
+        }
+
+        function compressImage() {
+            if (originalImages.length === 0) return;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                try {
+                    const image = originalImages[0];
+                    const quality = parseInt(document.getElementById('quality').value) / 100;
+                    
+                    const canvas = createCanvas(image.width, image.height);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(image, 0, 0);
+                    
+                    processedCanvas = canvas;
+                    
+                    // Display compressed image
+                    const container = document.getElementById('canvas-container');
+                    container.innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+                            <div style="text-align: center;">
+                                <h4 style="margin-bottom: 0.5rem;">Original</h4>
+                                <canvas id="original-canvas" class="canvas-preview"></canvas>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="margin-bottom: 0.5rem;">Compressed</h4>
+                                <canvas id="compressed-canvas" class="canvas-preview"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Draw original
+                    const originalCanvas = document.getElementById('original-canvas');
+                    const originalCtx = originalCanvas.getContext('2d');
+                    originalCanvas.width = image.width;
+                    originalCanvas.height = image.height;
+                    originalCtx.drawImage(image, 0, 0);
+                    
+                    // Draw compressed
+                    const compressedCanvas = document.getElementById('compressed-canvas');
+                    const compressedCtx = compressedCanvas.getContext('2d');
+                    compressedCanvas.width = canvas.width;
+                    compressedCanvas.height = canvas.height;
+                    compressedCtx.drawImage(canvas, 0, 0);
+                    
+                    // Calculate file sizes
+                    canvas.toBlob((blob) => {
+                        const compressedSize = blob.size;
+                        
+                        // Estimate original size (approximate)
+                        const originalSize = image.width * image.height * 3; // Rough estimate
+                        
+                        document.getElementById('original-size').textContent = formatFileSize(originalSize);
+                        document.getElementById('compressed-size').textContent = formatFileSize(compressedSize);
+                        document.getElementById('size-reduction').textContent = calculateSizeReduction(originalSize, compressedSize);
+                    }, 'image/jpeg', quality);
+                    
+                    // Add download button
+                    const controlsContainer = document.getElementById('controls-container');
+                    const existingDownload = controlsContainer.querySelector('.download-section');
+                    if (existingDownload) {
+                        existingDownload.remove();
+                    }
+                    
+                    const downloadBtn = document.createElement('div');
+                    downloadBtn.className = 'download-section';
+                    downloadBtn.innerHTML = `
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="downloadCompressedImage()">Download Compressed Image</button>
+                        </div>
+                    `;
+                    controlsContainer.appendChild(downloadBtn);
+                } catch (error) {
+                    console.error('Error compressing image:', error);
+                    alert('Error compressing image. Please try again.');
+                } finally {
+                    hideLoading();
+                }
+            }, 100);
+        }
+
+        function downloadCompressedImage() {
+            if (processedCanvas) {
+                const quality = parseInt(document.getElementById('quality').value) / 100;
+                downloadCanvas(processedCanvas, 'compressed-image.jpg', quality);
+            }
+        }
+
+        function updateResizeMethod() {
+            const method = document.querySelector('input[name="resize-method"]:checked').value;
+            const controls = document.getElementById('resize-controls');
+            
+            if (method === 'pixels') {
+                const width = originalImages.length > 0 ? originalImages[0].width : 800;
+                const height = originalImages.length > 0 ? originalImages[0].height : 600;
+                
+                controls.innerHTML = `
+                    <h4 style="margin-bottom: 1rem;">Dimensions</h4>
+                    <label class="control-label">Width (px)</label>
+                    <input type="number" class="control-input" min="1" value="${width}" id="resize-width" oninput="maintainAspectRatio('width')">
+                    <label class="control-label">Height (px)</label>
+                    <input type="number" class="control-input" min="1" value="${height}" id="resize-height" oninput="maintainAspectRatio('height')">
+                    <label style="display: flex; align-items: center; margin-top: 0.5rem;">
+                        <input type="checkbox" id="maintain-aspect" checked style="margin-right: 0.5rem;">
+                        Maintain aspect ratio
+                    </label>
+                `;
+            } else {
+                controls.innerHTML = `
+                    <h4 style="margin-bottom: 1rem;">Scale Percentage</h4>
+                    <label class="control-label">Scale: <span id="scale-value">100</span>%</label>
+                    <input type="range" class="control-input" min="10" max="300" value="100" id="resize-scale" oninput="updateScaleValue()">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem;">
+                        <button class="btn btn-secondary" onclick="setScale(50)" style="padding: 0.5rem; font-size: 0.75rem;">50%</button>
+                        <button class="btn btn-secondary" onclick="setScale(150)" style="padding: 0.5rem; font-size: 0.75rem;">150%</button>
+                        <button class="btn btn-secondary" onclick="setScale(200)" style="padding: 0.5rem; font-size: 0.75rem;">200%</button>
+                    </div>
+                `;
+            }
+        }
+
+        function maintainAspectRatio(changedDimension) {
+            if (!document.getElementById('maintain-aspect').checked || originalImages.length === 0) return;
+            
+            const image = originalImages[0];
+            const aspectRatio = image.width / image.height;
+            
+            if (changedDimension === 'width') {
+                const width = parseInt(document.getElementById('resize-width').value);
+                document.getElementById('resize-height').value = Math.round(width / aspectRatio);
+            } else {
+                const height = parseInt(document.getElementById('resize-height').value);
+                document.getElementById('resize-width').value = Math.round(height * aspectRatio);
+            }
+        }
+
+        function updateScaleValue() {
+            const scale = document.getElementById('resize-scale').value;
+            document.getElementById('scale-value').textContent = scale;
+        }
+
+        function setScale(value) {
+            document.getElementById('resize-scale').value = value;
+            updateScaleValue();
+        }
+
+        function resizeImage() {
+            if (originalImages.length === 0) return;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                try {
+                    const image = originalImages[0];
+                    const method = document.querySelector('input[name="resize-method"]:checked').value;
+                    let newWidth, newHeight;
+                    
+                    if (method === 'pixels') {
+                        newWidth = parseInt(document.getElementById('resize-width').value);
+                        newHeight = parseInt(document.getElementById('resize-height').value);
+                    } else {
+                        const scale = parseInt(document.getElementById('resize-scale').value) / 100;
+                        newWidth = Math.round(image.width * scale);
+                        newHeight = Math.round(image.height * scale);
+                    }
+                    
+                    const canvas = createCanvas(newWidth, newHeight);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(image, 0, 0, newWidth, newHeight);
+                    
+                    processedCanvas = canvas;
+                    
+                    // Display resized image
+                    const container = document.getElementById('canvas-container');
+                    container.innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+                            <div style="text-align: center;">
+                                <h4 style="margin-bottom: 0.5rem;">Original (${image.width}×${image.height})</h4>
+                                <canvas id="original-canvas" class="canvas-preview"></canvas>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="margin-bottom: 0.5rem;">Resized (${newWidth}×${newHeight})</h4>
+                                <canvas id="resized-canvas" class="canvas-preview"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Draw original
+                    const originalCanvas = document.getElementById('original-canvas');
+                    const originalCtx = originalCanvas.getContext('2d');
+                    originalCanvas.width = image.width;
+                    originalCanvas.height = image.height;
+                    originalCtx.drawImage(image, 0, 0);
+                    
+                    // Draw resized
+                    const resizedCanvas = document.getElementById('resized-canvas');
+                    const resizedCtx = resizedCanvas.getContext('2d');
+                    resizedCanvas.width = canvas.width;
+                    resizedCanvas.height = canvas.height;
+                    resizedCtx.drawImage(canvas, 0, 0);
+                    
+                    // Add download button
+                    const controlsContainer = document.getElementById('controls-container');
+                    const existingDownload = controlsContainer.querySelector('.download-section');
+                    if (existingDownload) {
+                        existingDownload.remove();
+                    }
+                    
+                    const downloadBtn = document.createElement('div');
+                    downloadBtn.className = 'download-section';
+                    downloadBtn.innerHTML = `
+                        <div style="margin-top: 1rem;">
+                            <button class="btn" onclick="downloadProcessedImage()">Download Resized Image</button>
+                        </div>
+                    `;
+                    controlsContainer.appendChild(downloadBtn);
+                } catch (error) {
+                    console.error('Error resizing image:', error);
+                    alert('Error resizing image. Please try again.');
+                } finally {
+                    hideLoading();
+                }
+            }, 100);
+        }
+
+        function downloadProcessedImage() {
+            if (processedCanvas) {
+                const toolNames = {
+                    editor: 'edited-image.jpg',
+                    splitter: 'split-image.jpg',
+                    merger: 'merged-image.jpg',
+                    compressor: 'compressed-image.jpg',
+                    resizer: 'resized-image.jpg'
+                };
+                
+                downloadCanvas(processedCanvas, toolNames[currentTool] || 'processed-image.jpg');
+            }
+        }
+
+        // Drag and drop handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadZone = document.querySelector('.upload-zone');
+            
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            
+            uploadZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileInput = document.getElementById('file-input');
+                    fileInput.files = files;
+                    handleFileUpload({ target: fileInput });
+                }
+            });
+            
+            // Initialize AdSense (placeholder)
+            if (window.adsbygoogle) {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            }
+        });
+    </script>
+</body>
+</html>
